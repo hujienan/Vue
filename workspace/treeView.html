@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tree View</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<style>
+		body{
+			font-size: 2em;
+		}
+		.bold {
+			font-weight: bold;
+		}
+		ul {
+		  padding-left: 2em;
+		  line-height: 1.5em;
+		  list-style-type: dot;
+		}
+		.item{
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<script type="text/x-template" id="tree-component">
+		<li>
+			<div
+				:class="{bold : isItems}"
+				@click="toggle"
+			>
+				{{ label }}
+				<span v-if="isItems"> {{ open ? '-' : '+' }}	</span>
+			</div>
+
+			<ul v-show="open" v-if="isItems">
+				<tree-view
+					class="item"
+					v-for="(item, index) in items"
+					:items="item.items"
+					:label="item.label"
+					:key="index"
+				>
+				</tree-view>
+			</ul>
+		</li>	
+	</script>
+	
+	<ul id="app">
+		<tree-view
+			class="item"
+			:items="tree.items"
+			:label="tree.label"
+		>
+		</tree-view>
+	</ul>
+	<script>
+		let tree = {
+			label: 'root',
+			items: [
+				{
+					label: 'item1',
+					items: [
+						{
+							label: 'item1.1'
+						},
+						{
+							label: 'item1.2',
+							items: [
+								{
+									label: 'item1.2.1',
+								},
+								{
+									label: 'item1.2.2'
+								}
+							]
+						}
+
+					]
+				},
+				{
+					label: 'item2'
+				},
+				{
+					label: 'item3'
+				}
+			]
+		}
+		Vue.component('tree-view',{
+			template: '#tree-component',
+			props: {
+				label: String,
+				items: Object
+			},
+			data: function(){
+					return {
+						open: false
+					}
+				},
+			computed: {
+				isItems: function(){
+					return this.items && this.items.length
+				}
+			},
+			methods: {
+				toggle: function(){
+					if(this.isItems){
+						this.open = !this.open
+					}
+				}
+			}
+
+		})
+
+		new Vue({
+			el: '#app',
+			data: {
+				tree
+			}
+		})
+
+	</script>
+
+</body>
+</html>
