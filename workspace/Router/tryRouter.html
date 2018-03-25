@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<body>
+	<div id="app">
+  		<router-view></router-view>
+	</div>
+<script>
+	//decouple the route by using props
+	const User = {
+		props: ['id'],
+		template: '<div><h2>User {{ id }}</h2><router-view></router-view></div>'
+	}
+	const Index = {
+		template: '<div><h1>Index Page</h1></div>'
+	}
+
+	const UserProfile = {
+		template: '<div>UserProfile</div>'
+	}
+	const UserPosts = {
+		template: '<div>UserPosts</div>'
+	}
+	const UserHome = {
+		template: '<div>UserHome</div>'
+	}
+
+	const router = new VueRouter({
+		routes: [
+		//when props set true, the route.params will be set as component props
+			{ path: '/user/:id', component: User, props: true,
+				children: [
+					{ path: 'profile', component: UserProfile },
+					{ path: 'posts', component: UserPosts },
+					{ path: '', component: UserHome }
+				]
+			},
+			{ path: '', component: Index }
+		]
+	})
+
+	const app = new Vue({
+		router
+	}).$mount('#app')
+
+</script>
+
+</body>
+</html>
